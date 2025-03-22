@@ -1,0 +1,77 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+:root{
+    --top-user-two: 100px;
+    --top-user-one: 100px;
+}
+body{
+    background: #222;
+    height: 100dvh;
+    color: #3f7;
+}
+.ask-players, .select-dificult{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.select-dificult{
+    display: none;
+}
+.ask-players h2, .select-dificult h2{
+    width: 100%;
+    text-align: center;
+    font-size: 3rem;
+}
+.ask-players button, .select-dificult button{
+    background: #222;
+    color: #3f7;
+    padding: 10px 20px;
+    font-size: 2rem;
+    border: 1px solid #3f7;
+    box-shadow: 0 0 10px #3f7;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.container-1, .container-2{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.container-1 .ball, .container-2 .ball{
+    width: 40px;
+    height: 40px;
+    background: #3f7;
+    border-radius: 100%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
+.container-1 .user{
+    width: 20px;
+    height: 100px;
+    position: absolute;
+    left: 10px;
+    top: var(--top-user-one);
+    background: #3f7;
+}
+.container-2 .user{
+    width: 20px;
+    height: 100px;
+    position: absolute;
+    right: 10px;
+    top: var(--top-user-two);
+    background: #3f7;
+}
