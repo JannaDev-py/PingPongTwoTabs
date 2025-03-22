@@ -5,6 +5,15 @@ const currentPage = (location.href.split("?")[1] === "2") ? "2" : "1";
 //replace the class of the container with the current page
 document.querySelector('.container').classList.replace(`container`, `container-${currentPage}`);
 
+//save the inner height and width of the each page
+localStorage.setItem(`innerWidth-${currentPage}`, innerWidth);
+let totalWidth = Number(localStorage.getItem(`innerWidth-1`)) + Number(localStorage.getItem(`innerWidth-2`));
+
+if(currentPage === "1"){
+    const container = document.querySelector(`.container-${currentPage}`);
+    container.style.setProperty("width", totalWidth + "px");
+}
+
 $btnOnePlayer.addEventListener('click', () => {
     //make ask player invisible
     document.querySelector('.ask-players').style.display = 'none';
@@ -66,17 +75,25 @@ let speedBallY = 10;
 
 function moveBall(){
     requestAnimationFrame(moveBall);
-    if(ball.style.getPropertyValue("top").replace("px", "") >= innerHeight - 45
-        || ball.style.getPropertyValue("top").replace("px", "") <= 0){
-        speedBallY = -speedBallY;
+    if(currentPage === "1"){    
+        if(ball.style.getPropertyValue("top").replace("px", "") >= innerHeight - 45
+            || ball.style.getPropertyValue("top").replace("px", "") <= 0){
+            speedBallY = -speedBallY;
+        }
+        if(ball.style.getPropertyValue("left").replace("px", "") >= totalWidth - 50
+            || ball.style.getPropertyValue("left").replace("px", "") <= 0){
+            speedBallX = -speedBallX;
+        }
+        ball.style.setProperty("top", (parseInt(ball.style.getPropertyValue("top")) + speedBallY) + "px");
+        ball.style.setProperty("left", (parseInt(ball.style.getPropertyValue("left")) + speedBallX) + "px");    
+        localStorage.setItem("ballPositionTop", ball.style.getPropertyValue("top").replace("px", ""));
+        localStorage.setItem("ballPositionLeft", ball.style.getPropertyValue("left").replace("px", ""));
+    }else{
+        const top = localStorage.getItem("ballPositionTop");
+        const left = Number(localStorage.getItem("ballPositionLeft")) - Number(localStorage.getItem("innerWidth-1"));
+        ball.style.setProperty("top",  top + "px");
+        ball.style.setProperty("left", left + "px");
     }
-    if(ball.style.getPropertyValue("left").replace("px", "") >= innerWidth - 50
-        || ball.style.getPropertyValue("left").replace("px", "") <= 0){
-        speedBallX = -speedBallX;
-    }
-
-    ball.style.setProperty("top", (parseInt(ball.style.getPropertyValue("top")) + speedBallY) + "px");
-    ball.style.setProperty("left", (parseInt(ball.style.getPropertyValue("left")) + speedBallX) + "px");
 }
 
 moveBall();
