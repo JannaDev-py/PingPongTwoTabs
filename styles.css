@@ -60,7 +60,7 @@ body{
     top: 50%;
 }
 .container-1 .user{
-    width: 20px;
+    width: 5px;
     height: 100px;
     position: absolute;
     left: 10px;
@@ -68,7 +68,7 @@ body{
     background: #3f7;
 }
 .container-2 .user{
-    width: 20px;
+    width: 5px;
     height: 100px;
     position: absolute;
     right: 10px;

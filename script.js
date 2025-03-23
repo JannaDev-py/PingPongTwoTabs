@@ -1,26 +1,42 @@
 const currentPage = (location.href.split("?")[1] === "2") ? "2" : "1";
 localStorage.setItem(`innerWidth-${currentPage}`, innerWidth);
 localStorage.setItem(`innerHeight-${currentPage}`, innerHeight);
-let isPlaying = false;
 
+//save the inner height and width of the each page
+window.onresize = () => {
+    localStorage.setItem(`innerWidth-${currentPage}`, innerWidth);
+    localStorage.setItem(`innerHeight-${currentPage}`, innerHeight);
+}
+
+let isPlaying = false;
+let countPlayer = 0;
+let countBot = 0;
 
 class bot {
-    constructor(element, difficult){
-        this.element = element;
-        if(difficult === "Easy"){
+    constructor(difficult){
+        this.difficult = difficult;
+        if(difficult == "Easy"){
             this.speed = 3;
-        }else if(difficult === "Medium"){
-            this.speed = 10;
-        }else{
-            this.speed = 25;
+        }else if(difficult == "Medium"){
+            this.speed = 15;
         }
     }
     move(){
         const root = document.querySelector(":root");
         const top = Number(localStorage.getItem("ballPositionTop"));
-        const left = Number(localStorage.getItem("ballPositionLeft"));
-        root.style.setProperty("--top-bot", top + "px");
-        root.style.setProperty("--top-user", left + "px");
+        let topBot = Number(localStorage.getItem("botPosition"));
+        if(this.difficult === "Literally impossible"){
+            root.style.setProperty("--top-bot", (topBot = top) + "px");
+        }else{
+            if((top >= topBot && top <= topBot + 100)){
+                return false;
+            }else if(topBot < top){
+                root.style.setProperty("--top-bot", (topBot += this.speed) + "px");
+            }else if(topBot > top){
+                root.style.setProperty("--top-bot", (topBot -= this.speed) + "px");
+            }    
+        }
+        localStorage.setItem("botPosition", topBot);
     }
 }
 
@@ -59,9 +75,15 @@ class ball {
         this.speedY = speedY;
     }
     move(){
-        if(this.positionX >= this.widthScreen - 40
-            || this.positionX <= 0){
+        if(this.positionX <= 0){
             this.speedX = -this.speedX;
+            this.positionX = this.widthScreen / 2;
+            if(isPlaying) countBot++;
+        }
+        if(this.positionX >= this.widthScreen - 40){
+            this.speedX = -this.speedX;
+            this.positionX = this.widthScreen / 2;
+            if(isPlaying) countPlayer++;
         }
         if(this.positionY >= this.heightScreen - 40
             || this.positionY <= 0){
@@ -81,11 +103,37 @@ class ball {
         this.element.style.setProperty("top", top + "px");
         this.element.style.setProperty("left", left + "px");
     }
+    checkCollisionWithPlayerOrBot(){
+        const ballPositionLeft = this.element.style.getPropertyValue("left").replace("px", "");
+        const ballPositionTop = this.element.style.getPropertyValue("top").replace("px", "");
+        const playerPosition = Number(localStorage.getItem("playerPosition"));
+        const botPosition = Number(localStorage.getItem("botPosition"));
+        if((ballPositionLeft <= 35 && ballPositionLeft >= 15)
+        &&(ballPositionTop >= playerPosition -15 && ballPositionTop<= playerPosition + 115)){
+            this.speedX = -this.speedX + 1;
+        }
+        //its minus 70 beacuse balls width is 40px and the hitbot is on the top left corner
+        if(( (this.widthScreen - 70) <= ballPositionLeft && ballPositionLeft <= this.widthScreen - 65)
+        &&(ballPositionTop >= botPosition - 15 && ballPositionTop <= botPosition + 115)){
+            this.speedX = -this.speedX + 1;
+        }
+
+        //check for win
+        if(countPlayer === 5){
+            alert("Player win!");
+            countPlayer = 0;
+            countBot = 0;
+        }else if(countBot === 5){
+            alert("Bot win!");
+            countPlayer = 0;
+            countBot = 0;
+        }
+    }
 }
 
 document.addEventListener("DOMContentLoaded", ()=>{
     const $btnPlay = document.querySelector('.btn-play');
-    let botOnSecondPage = new bot("hard");
+    let botOnSecondPage = new bot("Literally impossible");
     let playerFirstScreen = undefined;
 
     //height and width of the two pages
@@ -112,6 +160,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
         const updateBall = ()=>{
             requestAnimationFrame(updateBall);
             ballToPlay.move();
+            ballToPlay.checkCollisionWithPlayerOrBot();
         }
         updateBall();
     }
@@ -132,6 +181,10 @@ document.addEventListener("DOMContentLoaded", ()=>{
                 document.querySelector('.ask-players').style.display = 'none';
                 window.open(location.href.split("?")[0] + "?2", "_blank");
                 localStorage.setItem("botDifficult", $btn.innerText);
+                if($btn.innerText === "Literally impossible"){
+                    ballToPlay.speedX = 25;
+                    ballToPlay.speedY = 25;
+                }
             });
         });
     });
