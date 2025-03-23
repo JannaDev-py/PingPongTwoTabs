@@ -4,8 +4,8 @@
     box-sizing: border-box;
 }
 :root{
-    --top-user-two: 100px;
-    --top-user-one: 100px;
+    --top-bot: 100px;
+    --top-user: 100px;
 }
 body{
     background: #222;
@@ -64,7 +64,7 @@ body{
     height: 100px;
     position: absolute;
     left: 10px;
-    top: var(--top-user-one);
+    top: var(--top-user);
     background: #3f7;
 }
 .container-2 .user{
@@ -72,6 +72,6 @@ body{
     height: 100px;
     position: absolute;
     right: 10px;
-    top: var(--top-user-two);
+    top: var(--top-bot);
     background: #3f7;
 }
