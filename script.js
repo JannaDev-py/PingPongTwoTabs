@@ -16,7 +16,7 @@ class bot {
     constructor(difficult){
         this.difficult = difficult;
         if(difficult == "Easy"){
-            this.speed = 3;
+            this.speed = 2;
         }else if(difficult == "Medium"){
             this.speed = 15;
         }
@@ -26,13 +26,13 @@ class bot {
         const top = Number(localStorage.getItem("ballPositionTop"));
         let topBot = Number(localStorage.getItem("botPosition"));
         if(this.difficult === "Literally impossible"){
-            root.style.setProperty("--top-bot", (topBot = top) + "px");
+            root.style.setProperty("--top-bot", (topBot = top - 30) + "px");
         }else{
             if((top >= topBot && top <= topBot + 100)){
                 return false;
-            }else if(topBot < top){
+            }else if((topBot - 30) < top){
                 root.style.setProperty("--top-bot", (topBot += this.speed) + "px");
-            }else if(topBot > top){
+            }else if((topBot + 30) > top){
                 root.style.setProperty("--top-bot", (topBot -= this.speed) + "px");
             }    
         }
@@ -108,14 +108,14 @@ class ball {
         const ballPositionTop = this.element.style.getPropertyValue("top").replace("px", "");
         const playerPosition = Number(localStorage.getItem("playerPosition"));
         const botPosition = Number(localStorage.getItem("botPosition"));
-        if((ballPositionLeft <= 35 && ballPositionLeft >= 15)
+        if((ballPositionLeft <= 35)
         &&(ballPositionTop >= playerPosition -15 && ballPositionTop<= playerPosition + 115)){
-            this.speedX = -this.speedX + 1;
+            this.speedX = -this.speedX;
         }
         //its minus 70 beacuse balls width is 40px and the hitbot is on the top left corner
-        if(( (this.widthScreen - 70) <= ballPositionLeft && ballPositionLeft <= this.widthScreen - 65)
+        if(((this.widthScreen - 75) <= ballPositionLeft)
         &&(ballPositionTop >= botPosition - 15 && ballPositionTop <= botPosition + 115)){
-            this.speedX = -this.speedX + 1;
+            this.speedX = -this.speedX;
         }
 
         //check for win
